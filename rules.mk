@@ -8,6 +8,11 @@ CORE_HEADER_DIR  := $(CORE_DIR)/$(INC_DIR)/
 
 CORE_SOURCE  := $(wildcard $(CORE_DIR)/$(SRC_DIR)/*.c)
 
+
+# Universal Devices Definition
+
+# The reason why we need uni_def_1 to uni_def_4,instead of just one macro:
+# http://stackoverflow.com/questions/35476588/makefile-rule-not-a-target-when-using-eval
 define uni_def_1
 
 $(1)_RELEASE_DIR           := $(RELEASE_DIR)/$(1)
@@ -28,7 +33,7 @@ endef
 define uni_def_4
 #If DEVICE need CMSMS,assign new include directory list.
 $(foreach t,
-          $(target_NOT_using_CMSIS_list),
+          #$(target_NOT_using_CMSIS_list),
           ifneq ($(target_NOT_using_CMSIS_list),$(1)) 
                  $(1)_INC_DIR := $(CORE_HEADER_DIR) \
                                       $($(1)_DEPENDENT_HEADER_DIR) \

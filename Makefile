@@ -1,26 +1,32 @@
-VERSION_BASE = $(shell git describe --dirty --always --tags)
-ROSS_COMPILE ?= arm-none-eabi-
+CROSS_COMPILE ?= arm-none-eabi-
 CC := $(CROSS_COMPILE)gcc
 AS := $(CROSS_COMPILE)as
-
-ifeq ($(CHIP_FAMILY), samd21)
-COMMON_FLAGS = -mthumb -mcpu=cortex-m0plus -Os -g -DSAMD21
-endif
-ifeq ($(CHIP_FAMILY), samd51)
-COMMON_FLAGS = -mthumb -mcpu=cortex-m4 -O2 -g -DSAMD51
-endif
-
-
+CORTEX_M3 := -mcpu=cortex-m3
+CORTEX_M4 := -mcpu=cortex-m4
 CFLAGS = -fno-common -ffreestanding -O0 -std=gnu99 \
 	 	 -gdwarf-2 -g3 -Wall -Werror \
-	 	 -mthumb
+	 	 -mthumb 
+
+#devices vendor
+STM32 := STM32
+
+#Naming your devices
+STM32P103_DEVICE := p103
+STM32F429_DEVICE := f429disco
+
+#Device using Cortex-M4 CPU.Otherwise, treated as Cortex-M3(in uni_def)
+target_using_CM4_list := $(STM32F429_DEVICE)
+
+#For those devices that does not need CMSIS
+target_NOT_using_CMSIS_list := 
 
 #Universal Devices Defintion
 include rules.mk
-#Create corresponding build command to the device
+
+#Create corresponding device variable
+$(eval $(call eval_all_variable,$(STM32P103_DEVICE),$(STM32)))
 $(eval $(call eval_all_variable,$(STM32F429_DEVICE),$(STM32)))
 
-NAME = vcc-build-$(VERSION_BASE)
 
 define build_command
 	mkdir -p $($(1)_RELEASE_DIR)
@@ -36,15 +42,55 @@ $($(1)_TARGET):
 	$(call build_command,$(1))
 endef
 
+#Create corresponding build command to the device
 $(eval $(call eval_build_command,$(STM32P103_DEVICE)))
+$(eval $(call eval_build_command,$(STM32F429_DEVICE)))
 
-PLAT ?= $(SAMD21G18A) #Default for now
+#default target
+PLAT ?= $(STM32P103_DEVICE)
+
+.PHONY:all target clean cscope astyle st-flash st-erase
+
+all:  $($(STM32F429_DEVICE)_TARGET) $($(STM32P103_DEVICE)_TARGET)
 
 target:
 	$(call build_command,$(PLAT))
 
-clean:
-	rm -rf  $(RELEASE_DIR)
+st-flash: $($(STM32F429_DEVICE)_TARGET)
+	st-flash --reset write $($(STM32F429_DEVICE)_TARGET_bin) 0x8000000
 
-version:
-	echo "Newest version should be $(NAME)"
+st-erase:
+	st-flash erase
+
+gdb_ST-UTIL: $($(STM32F429_DEVICE)_TARGET_elf)
+	@echo ""
+	@echo "Before execute this command,you should:"
+	@echo "Open another terminal,and execute the command:\"st-util\""
+	@echo ""
+	arm-none-eabi-gdb $^ -ex "target remote:4242"
+
+qemu: $($(STM32P103_DEVICE)_TARGET)
+	@qemu-system-arm -M ? | grep stm32-p103 >/dev/null || exit
+	@echo "Press Ctrl-A and then X to exit QEMU"
+	@echo
+	qemu-system-arm -M stm32-p103 -nographic -kernel $($(STM32P103_DEVICE)_TARGET_bin)
+
+qemu_GDBstub: $($(STM32P103_DEVICE)_TARGET)
+	@echo ""
+	@echo "Open another terminal,and type \"make qemu_GDBconnect\""
+	@echo ""
+	qemu-system-arm -M stm32-p103 -nographic -kernel $($(STM32P103_DEVICE)_TARGET_bin) -s -S
+
+qemu_GDBconnect: $($(STM32P103_DEVICE)_TARGET_elf)
+	arm-none-eabi-gdb $^ -ex "target remote:1234"
+
+cscope:
+	cscope -Rbqf ./cscope.out
+
+astyle:
+	@echo "More details please see: ../coding-style.txt"
+	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=cmsis --recursive ./*.c
+	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=cmsis --recursive ./*.h
+
+clean:
+	rm -rf $(RELEASE_DIR)

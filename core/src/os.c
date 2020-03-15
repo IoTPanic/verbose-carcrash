@@ -37,7 +37,9 @@ void test2(void *userdata)
 
 void test3(void *userdata)
 {
-	busy_loop(userdata);
+	puts("Task is currently running could I have a cup o' memory sia? ");
+	puts(userdata);
+	puts("\r\n");
 }
 
 int main(void)
