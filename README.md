@@ -1,7 +1,19 @@
 # verbose-carcrash
 This is an experimental ARM OS, under no circumstance should it be ran on anything and I am not at all responsible for bricking your crap. It is actually called verbose"carcrash" so I feel like I don't have to say that. The goals of this is for me to grasp the difficulty because honestly as I'm writing this I'm wondering what is so hard about writing a OS totally around ARM that is totally designed around IoT and the goals of IoT.
 
+# mini-arm-os
+
 Massive thanks to @jserv and his mini-arm-os which I also stole to start with.
+
+mini-arm-os is written by:
+  Jim Huang <jserv.tw@gmail.com>
+  Jeff Liaw <rampant1018@gmail.com>
+  Jia-Rung Chang <jaredcjr.tw@gmail.com>
+  Yen-Kuan Wu <c14006078@gmail.com>
+  lecopzer <james455096@gmail.com>
+
+Copyrighted by:
+  National Cheng Kung University, Taiwan
 
 # Building
 
