@@ -8,7 +8,13 @@ CFLAGS = -fno-common -ffreestanding -O0 -std=gnu99 \
 	 	 -gdwarf-2 -g3 -Wall -Werror \
 	 	 -mthumb
 
+#Universal Devices Defintion
+include rules.mk
+
 NAME = vcc-build-$(VERSION_BASE)
 
 clean:
-	rm -rf build/
+	rm -rf  $(RELEASE_DIR)
+
+version:
+	echo "Newest version should be $(NAME)"
