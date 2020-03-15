@@ -3,17 +3,9 @@ This is an experimental ARM OS, under no circumstance should it be ran on anythi
 
 # mini-arm-os
 
-Massive thanks to @jserv and his mini-arm-os which I also stole to start with.
+Massive thanks to @jserv and his mini-arm-os which I also stole to start with. Please check out the repo here, the source code is nice and clear so you can see what's going on and it contains multiple nice working examples with emulation included in the 08 section.  https://github.com/jserv/mini-arm-os.
 
-mini-arm-os is written by:
-  Jim Huang <jserv.tw@gmail.com>
-  Jeff Liaw <rampant1018@gmail.com>
-  Jia-Rung Chang <jaredcjr.tw@gmail.com>
-  Yen-Kuan Wu <c14006078@gmail.com>
-  lecopzer <james455096@gmail.com>
-
-Copyrighted by:
-  National Cheng Kung University, Taiwan
+`mini-arm-os was copyrighted by National Cheng Kung University, freely redistributable under the two-clause BSD License.`
 
 # Building
 
