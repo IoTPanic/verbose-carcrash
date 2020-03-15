@@ -3,6 +3,14 @@ This is an experimental ARM OS, under no circumstance should it be ran on anythi
 
 Massive thanks to @jserv and his mini-arm-os which I also stole to start with.
 
+# Building
+
+Make has a few commands atm.
+
+**make version** - Print the newest possible version of the OS
+
+**make clean** - Delete the releases folder
+
 # Structure
 
 **/platform/**
