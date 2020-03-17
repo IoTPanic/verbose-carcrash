@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "reg.h"
 #include "systick.h"
 #include "threads.h"
@@ -18,8 +20,10 @@ static void delay(volatile int count)
 
 static void busy_loop(void *str)
 {
+	void *i = NULL;
+	i = str;
 	while (1) {
-		puts(str);
+		puts(i);
 		puts(": Running...\r\n");
 		delay(RECOMMAND_TIME_INTERVAL);
 	}
@@ -37,8 +41,27 @@ void test2(void *userdata)
 
 void test3(void *userdata)
 {
-	puts("Task is currently running could I have a cup o' memory sia? ");
+	puts("Task 3 starting... userdata:");
 	puts(userdata);
+	puts("\r\n");
+	//char strr[30];
+	int result[2];
+	result[1] = 0x0;
+	result[0] = 0x0;
+	puts("Computating...\r\n");
+	
+	for(unsigned i = 0; i<100000; ++i){
+		char str[5];
+		itoa(result[0], str, 10);
+		puts((void *)str);
+		puts("\r\n");
+		result[0] = result[0]+1;
+	}
+
+	puts("done processing...");
+	puts((void *)result);
+	//sprintf(strr,"%ul",result);
+	//puts(strr);
 	puts("\r\n");
 }
 
